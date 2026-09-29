@@ -2,6 +2,12 @@
 
 Notable changes are recorded here. Version numbers follow semantic versioning; 0.x releases may change before a stable 1.0 release.
 
+## 0.1.1 — 2026-09-29
+
+- Free universal DMG preview packaging with ad-hoc signing, architecture checks and SHA-256 checksums.
+- Chinese/English installation, first-launch and update permission guidance.
+- No Developer ID signing or notarization; Finder resizing behavior is unchanged.
+
 ## 0.1.0 — 2026-09-29
 
 Initial public source preview.

@@ -20,7 +20,9 @@ Finder Fixer 是一个轻量的 macOS 菜单栏工具。设置一次宽高，后
 
 ## 安装与使用
 
-当前以源码测试版发布，**没有 Developer ID 签名和公证的安装包**。需要 macOS、完整 Xcode 及命令行工具。从源码构建：
+提供免费 DMG 测试版，**仅临时签名，没有 Developer ID 签名和 Apple 公证**。从 [Releases](https://github.com/Luvisdaisy/finder-fixer/releases) 下载 DMG，将 App 拖到“应用程序”，无需 Xcode。首次打开可能被 macOS 拦截；系统允许时，确认来源可信后可在“隐私与安全性”中选择“仍要打开”。详见[安装与更新说明](INSTALL.md)。
+
+也可以安装完整 Xcode 及命令行工具，从源码构建：
 
 ```sh
 git clone https://github.com/Luvisdaisy/finder-fixer.git
@@ -71,7 +73,7 @@ scripts/             构建、测试、工程及图标生成工具
 assets/              图标源素材
 ```
 
-[更新记录](CHANGELOG.md)
+[更新记录](CHANGELOG.md) · [DMG 打包与发布](RELEASING.md)
 
 ## 反馈与许可证
 

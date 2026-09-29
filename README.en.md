@@ -16,9 +16,11 @@ A small native macOS menu bar utility. Set a width and height once; new standard
 - Toggle automatic resizing or quit from the menu bar to stop monitoring.
 - Built with SwiftUI, AppKit and Accessibility APIs. No third-party runtime dependencies, accounts, telemetry or network services.
 
-## Build and run
+## Install or build
 
-This is a source-only preview release. No Developer ID-signed or notarized installer is provided. Full Xcode and its command-line tools are required.
+Download the free preview DMG from [Releases](https://github.com/Luvisdaisy/finder-fixer/releases) and drag the app to Applications; Xcode is not required. The app is **ad-hoc signed, without Developer ID signing or Apple notarization**. macOS may block its first launch; see [installation and updates](INSTALL.md) for the system Open Anyway flow and Accessibility permissions.
+
+To build from source instead, install full Xcode and its command-line tools:
 
 ```sh
 git clone https://github.com/Luvisdaisy/finder-fixer.git
@@ -52,7 +54,7 @@ Open `finder-fixer.xcodeproj` directly; project generation is optional. XCTest h
 
 Source modules: `App` handles lifecycle and menus; `Settings` manages UI and drafts; `WindowManagement` observes Finder and applies geometry policies; `Infrastructure` handles permissions and persistence.
 
-[Changelog](CHANGELOG.md) · [Contributing](CONTRIBUTING.md)
+[Changelog](CHANGELOG.md) · [Contributing](CONTRIBUTING.md) · [Packaging and releases](RELEASING.md)
 
 ## Feedback and license
 
