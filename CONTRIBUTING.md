@@ -13,7 +13,7 @@
 ./scripts/test.sh
 ```
 
-单元测试宿主不启动 Finder 服务，不需要辅助功能权限。真实窗口行为按[手工测试流程](docs/manual-testing.md)验证，并注明环境及未执行项。
+单元测试宿主不启动 Finder 服务，不需要辅助功能权限。涉及窗口行为的修改，请实机检查新窗口尺寸、手动缩放、自动开关和权限变化，并注明环境及未执行项。
 
 ## 修改约定
 
@@ -24,7 +24,7 @@
 5. 新增、删除 Swift 文件或修改工程生成配置后，运行 `python3 scripts/create-project.py`，将工程与生成器一起提交。生成器会覆盖工程和共享 Scheme，定制构建配置应先修改生成器。
 6. 提交前运行 `git diff --check`、构建和相关测试；说明未验证的桌面行为。
 
-不要提交 `build/`、`dist/`、原始桌面日志、个人配置、签名证书或令牌。图标生成是独立开发工具，参阅 [assets/README.md](assets/README.md)，正常构建无需 Python 或 Pillow。
+不要提交 `build/`、`dist/`、本地 `docs/` 目录、原始桌面日志、个人配置、签名证书或令牌。图标生成是独立开发工具，参阅 [assets/README.md](assets/README.md)，正常构建无需 Python 或 Pillow。
 
 ## Pull request 内容
 

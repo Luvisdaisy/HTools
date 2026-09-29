@@ -11,8 +11,7 @@ dist/
 .agents/
 openspec/
 output/
-docs/local-history/
-docs/evidence/
+docs/
 
 # Credentials and local configuration
 .env

@@ -16,10 +16,6 @@ A small native macOS menu bar utility. Set a width and height once; new standard
 - Toggle automatic resizing or quit from the menu bar to stop monitoring.
 - Built with SwiftUI, AppKit and Accessibility APIs. No third-party runtime dependencies, accounts, telemetry or network services.
 
-![Static design preview of settings and permission states](docs/ui-preview.png)
-
-*Design preview, not a runtime screenshot.*
-
 ## Build and run
 
 This is a source-only preview release. No Developer ID-signed or notarized installer is provided. Full Xcode and its command-line tools are required.
@@ -37,7 +33,7 @@ open build/Build/Products/Release/finder-fixer.app
 
 Dimensions describe the window's outer frame in logical points, not pixels. Finder's own minimum size and the available screen area may constrain the result. Closing settings leaves the app running; choose **退出** (Quit) from the menu bar to stop it.
 
-Rebuilding an ad-hoc-signed app may require removing its old Accessibility entry and adding the new build. Permission is used to inspect and resize Finder windows, not to read file contents. See [privacy](PRIVACY.md) and the [usage guide](docs/usage.md) (Chinese).
+Rebuilding an ad-hoc-signed app may require removing its old Accessibility entry and adding the new build. Permission is used to inspect and resize Finder windows, not to read file contents. See [privacy](PRIVACY.md).
 
 ## Compatibility
 
@@ -56,7 +52,7 @@ Open `finder-fixer.xcodeproj` directly; project generation is optional. XCTest h
 
 Source modules: `App` handles lifecycle and menus; `Settings` manages UI and drafts; `WindowManagement` observes Finder and applies geometry policies; `Infrastructure` handles permissions and persistence.
 
-[Architecture](docs/design.md) · [Testing](docs/manual-testing.md) · [Changelog](CHANGELOG.md) · [Release process](docs/releasing.md). Detailed engineering docs are currently in Chinese.
+[Changelog](CHANGELOG.md) · [Contributing](CONTRIBUTING.md)
 
 ## Feedback and license
 

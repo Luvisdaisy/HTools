@@ -12,4 +12,4 @@ Initial public source preview.
 - Unit tests for geometry, persistence, migration and settings drafts.
 - MIT license, Chinese/English README, contributor documentation and macOS CI.
 
-No signed/notarized binary is provided. Multiple displays, Intel and older macOS versions remain unverified through real desktop use. See [testing](docs/manual-testing.md).
+No signed/notarized binary is provided. Multiple displays, Intel and older macOS versions remain unverified through real desktop use. See [compatibility](README.en.md#compatibility).

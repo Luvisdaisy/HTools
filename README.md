@@ -4,7 +4,7 @@
 
 让每个新开的访达窗口，自动使用你喜欢的尺寸。
 
-[English](README.en.md) · [使用指南](docs/usage.md) · [参与贡献](CONTRIBUTING.md) · [MIT 许可证](LICENSE)
+[English](README.en.md) · [参与贡献](CONTRIBUTING.md) · [MIT 许可证](LICENSE)
 
 Finder Fixer 是一个轻量的 macOS 菜单栏工具。设置一次宽高，后续新开的标准访达窗口会自动调整一次；之后仍可自由拖动和缩放。
 
@@ -16,9 +16,7 @@ Finder Fixer 是一个轻量的 macOS 菜单栏工具。设置一次宽高，后
 - 自动应用可以随时关闭；退出应用即停止监听。
 - SwiftUI + AppKit 原生实现，无第三方运行依赖、账号或联网服务。
 
-![已授权设置页与未授权页面的静态设计预览](docs/ui-preview.png)
-
-*上图为静态设计预览，并非实机截图。当前应用界面为简体中文。*
+当前应用界面为简体中文。
 
 ## 安装与使用
 
@@ -37,7 +35,7 @@ open build/Build/Products/Release/finder-fixer.app
 
 宽高是窗口外框的逻辑点（pt），不是物理像素；Finder 自身最小尺寸和屏幕可用区域可能限制实际尺寸。关闭设置窗后应用继续运行，退出请使用菜单栏菜单。
 
-权限仅用于观察和调整 Finder 窗口，不读取文件内容。重建临时签名的应用后，可能需要重新添加辅助功能授权。详见[使用与故障排查](docs/usage.md)和[隐私说明](PRIVACY.md)。
+权限仅用于观察和调整 Finder 窗口，不读取文件内容。重建临时签名的应用后，可能需要重新添加辅助功能授权。详见[隐私说明](PRIVACY.md)。
 
 ## 兼容性与限制
 
@@ -50,7 +48,7 @@ open build/Build/Products/Release/finder-fixer.app
 | 尚未实机验证 | 多屏、Intel、旧 macOS、完整 VoiceOver 与部分权限竞态 |
 | 暂未提供 | 登录启动、自动更新、按文件夹记忆、其他应用窗口管理 |
 
-已实现能力、单元测试与真实桌面验证分别记录在[测试说明](docs/manual-testing.md)。
+单元测试验证尺寸策略与设置逻辑，不替代真实 Finder 桌面验收。
 
 ## 开发
 
@@ -71,10 +69,9 @@ finder-fixer/
 finder-fixerTests/    尺寸策略与偏好/草稿回归测试
 scripts/             构建、测试、工程及图标生成工具
 assets/              图标源素材
-docs/               使用、架构、产品范围与测试文档
 ```
 
-[架构说明](docs/design.md) · [产品范围](docs/PRD.md) · [UI 说明](docs/ui-design.md) · [发布流程](docs/releasing.md) · [更新记录](CHANGELOG.md)
+[更新记录](CHANGELOG.md)
 
 ## 反馈与许可证
 
