@@ -1,0 +1,29 @@
+.DS_Store
+build/
+DerivedData/
+*.xcuserstate
+xcuserdata/
+*.xcresult
+dist/
+
+# Local tools, planning records and raw desktop/build evidence
+.codex/
+.agents/
+openspec/
+output/
+docs/local-history/
+docs/evidence/
+
+# Credentials and local configuration
+.env
+.env.*
+!.env.example
+*.p12
+*.p8
+*.mobileprovision
+*.provisionprofile
+
+# Python helper tools
+.venv/
+__pycache__/
+*.pyc

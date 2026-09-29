@@ -1,0 +1,32 @@
+name: Bug report / 问题反馈
+description: Report a reproducible issue with Finder Fixer.
+body:
+  - type: markdown
+    attributes:
+      value: Please redact private filenames and paths. 安全漏洞请按 SECURITY.md 私密报告。
+  - type: input
+    id: version
+    attributes:
+      label: App version or commit / 应用版本或提交
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment / 环境
+      description: macOS version, Intel or Apple Silicon, number of displays and scaling.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce / 复现步骤
+      description: Include permission state, automatic resizing toggle and window state.
+    validations:
+      required: true
+  - type: textarea
+    id: behavior
+    attributes:
+      label: Expected and actual behavior / 预期与实际结果
+    validations:
+      required: true

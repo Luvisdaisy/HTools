@@ -1,0 +1,16 @@
+name: Feature request / 功能建议
+description: Describe a problem and a focused improvement.
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem / 遇到的问题
+      description: What are you trying to do, and what gets in the way?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Suggested behavior and alternatives / 预期行为与替代方案
+    validations:
+      required: true
