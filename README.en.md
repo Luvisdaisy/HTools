@@ -1,63 +1,44 @@
-# Finder Fixer
+# HTools
 
-<img src="assets/app-icon.png" width="96" alt="Finder Fixer icon">
+A native macOS menu bar utility for new Finder window sizes and optional built-in keyboard control. HTools succeeds Finder Fixer.
 
-Give every new Finder window your preferred size.
-
-[简体中文](README.md) · [Contributing](CONTRIBUTING.md) · [MIT License](LICENSE)
-
-A small native macOS menu bar utility. Set a width and height once; new standard Finder windows are resized once, then remain free to move and resize manually. The app UI is currently in Simplified Chinese.
+[Download v0.2.0](https://github.com/Luvisdaisy/finder-fixer/releases/tag/v0.2.0) · [简体中文](README.md) · [Installation](INSTALL.md)
 
 ## Features
 
-- Fixed dimensions, defaulting to **1000 × 700 points**, stored locally.
-- Existing windows stay unchanged when the app starts or settings are saved.
-- No snapping back after manual resizing. Tabs, refocusing and restoring minimized windows do not trigger another resize.
-- Toggle automatic resizing or quit from the menu bar to stop monitoring.
-- Built with SwiftUI, AppKit and Accessibility APIs. No third-party runtime dependencies, accounts, telemetry or network services.
+- Resize each new standard Finder window once. Existing windows, manual resizing, tabs and restored windows remain unchanged. Dimensions use logical points; the default is 1000 × 700.
+- Show connected keyboards and disable only a confidently identified built-in keyboard while an external keyboard is present. Switching off, quitting, selected-device removal or sleep ends the session; reconnecting never automatically rearms it.
+- Configure Accessibility, Input Monitoring and the keyboard service together. Administrator authorization is required to install/update/remove the service; normal keyboard toggles do not need a password.
+- Check actual privileged worker permissions as well as foreground consent. Unavailable features lead to the shared Permissions page.
 
-## Install or build
+The UI is in Simplified Chinese. No accounts, network requests, analytics or third-party runtime dependencies. No typed content is recorded.
 
-Download the free preview DMG from [Releases](https://github.com/Luvisdaisy/finder-fixer/releases) and drag the app to Applications; Xcode is not required. The app is **ad-hoc signed, without Developer ID signing or Apple notarization**. macOS may block its first launch; see [installation and updates](INSTALL.md) for the system Open Anyway flow and Accessibility permissions.
+<img src="docs/images/finder.png" width="760" alt="Finder settings component preview">
 
-To build from source instead, install full Xcode and its command-line tools:
+This image is an offscreen render of real SwiftUI components with illustrative state, not a desktop or hardware test screenshot.
 
-```sh
-git clone https://github.com/Luvisdaisy/finder-fixer.git
-cd finder-fixer
-./scripts/build.sh
-open build/Build/Products/Release/finder-fixer.app
-```
+## Install, update and remove
 
-1. Add and enable the built app in **System Settings → Privacy & Security → Accessibility**.
-2. Open **设置** (Settings) from the menu bar. Enter **宽度** (width) and **高度** (height), click **保存** (Save), and enable **自动应用到新窗口** (apply to new windows).
-3. Open a new Finder window with ⌘N.
+Download `HTools-0.2.0-universal.dmg`, drag HTools to Applications, eject the image and launch the installed copy. Complete the three setup items. This is an **ad-hoc signed preview without Developer ID signing or notarization**; see [INSTALL.md](INSTALL.md) for the system opening flow.
 
-Dimensions describe the window's outer frame in logical points, not pixels. Finder's own minimum size and the available screen area may constrain the result. Closing settings leaves the app running; choose **退出** (Quit) from the menu bar to stop it.
+Quit before replacing the app. Update the keyboard service in Permissions after every new binary; macOS may also require renewing privacy permissions. Before deleting HTools, remove its service from the Permissions management menu. Closing settings leaves the menu bar app running.
 
-Rebuilding an ad-hoc-signed app may require removing its old Accessibility entry and adding the new build. Permission is used to inspect and resize Finder windows, not to read file contents. See [privacy](PRIVACY.md).
+## Compatibility and evidence
 
-## Compatibility
+Targets macOS 13+, with arm64 and x86_64 binaries. The test target needs macOS 14+. Local development uses Xcode 27. The user confirmed the integrated keyboard feature works on Apple Silicon / macOS 26.6.2 after the worker-session correction. The new UI has component renders and automated regression checks.
 
-The app targets macOS 13+; the test target requires macOS 14+. Local builds have been verified with Xcode 27. Previous desktop validation covered macOS 26.6.2 on Apple Silicon with one display. Other OS versions, Intel, multiple displays and complete VoiceOver workflows have not been manually verified.
-
-Fullscreen, minimized and nonstandard windows are skipped. Tiled/maximized windows are subject to system layout constraints. Launch at login, automatic updates and per-folder preferences are not implemented.
+Intel, older macOS versions, multiple displays, complete VoiceOver support and a systematic physical disconnect/crash/sleep recovery matrix remain unverified. Power and Touch ID keys are outside the blocking guarantee. Unit tests and API success are not physical keyboard evidence.
 
 ## Development
 
 ```sh
-./scripts/build.sh Debug
+git clone https://github.com/Luvisdaisy/finder-fixer.git HTools
+cd HTools
+./scripts/build.sh
 ./scripts/test.sh
+./scripts/package-dmg.sh
 ```
 
-Open `finder-fixer.xcodeproj` directly; project generation is optional. XCTest hosts do not start the Finder service or show app UI. CI build/unit-test results do not establish desktop integration compatibility.
+Open `HTools.xcodeproj`; regenerate it with `python3 scripts/create-project.py` after adding source files. Test hosts do not start Finder control, install a helper or seize keyboards. See [architecture](docs/design.md), [verification](docs/manual-testing.md), [contributing](CONTRIBUTING.md), [release process](RELEASING.md), [privacy](PRIVACY.md) and [security](SECURITY.md).
 
-Source modules: `App` handles lifecycle and menus; `Settings` manages UI and drafts; `WindowManagement` observes Finder and applies geometry policies; `Infrastructure` handles permissions and persistence.
-
-[Changelog](CHANGELOG.md) · [Contributing](CONTRIBUTING.md) · [Packaging and releases](RELEASING.md)
-
-## Feedback and license
-
-Use [Issues](https://github.com/Luvisdaisy/finder-fixer/issues) for reproducible bugs and focused feature requests. Include macOS version, CPU architecture and display setup; redact private filenames and paths. See [SECURITY.md](SECURITY.md) for vulnerability reporting.
-
-Released under the [MIT License](LICENSE). Finder and macOS are Apple trademarks. This independent project is not affiliated with or endorsed by Apple.
+The repository URL and historical releases keep their existing addresses. Licensed under [MIT](LICENSE). Finder and macOS are Apple trademarks. This project is not affiliated with Apple.

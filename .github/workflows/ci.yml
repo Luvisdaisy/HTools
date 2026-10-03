@@ -31,7 +31,7 @@ jobs:
       - name: Check generated project
         run: |
           python3 scripts/create-project.py
-          git diff --exit-code -- finder-fixer.xcodeproj
+          git diff --exit-code -- HTools.xcodeproj
           git diff --check
       - name: Build and verify universal preview DMG
         run: ./scripts/package-dmg.sh

@@ -1,82 +1,65 @@
-# Finder Fixer
+# HTools
 
-<img src="assets/app-icon.png" width="96" alt="Finder Fixer icon">
+<img src="assets/app-icon.png" width="88" alt="HTools">
 
-让每个新开的访达窗口，自动使用你喜欢的尺寸。
+让新建访达窗口保持合适的尺寸，用外接键盘时按需禁用内置键盘。
 
-[English](README.en.md) · [参与贡献](CONTRIBUTING.md) · [MIT 许可证](LICENSE)
+[下载 v0.2.0](https://github.com/Luvisdaisy/finder-fixer/releases/tag/v0.2.0) · [English](README.en.md) · [安装与更新](INSTALL.md) · [使用指南](docs/usage.md)
 
-Finder Fixer 是一个轻量的 macOS 菜单栏工具。设置一次宽高，后续新开的标准访达窗口会自动调整一次；之后仍可自由拖动和缩放。
+HTools 是原 Finder Fixer 的新版本，一个原生 macOS 菜单栏工具，无账号、联网服务和第三方运行依赖。
 
 ## 功能
 
-- 固定宽高，默认 **1000 × 700 pt**，设置保存在本机。
-- 只调整新窗口，启动应用或保存设置不会批量改变已有窗口。
-- 手动缩放后不会被拉回；标签页、重新聚焦和最小化恢复不会重复调整。
-- 自动应用可以随时关闭；退出应用即停止监听。
-- SwiftUI + AppKit 原生实现，无第三方运行依赖、账号或联网服务。
+- **访达窗口**：设置宽高后，只调整之后新建的标准窗口；已有窗口、手动缩放和标签页不受影响。默认尺寸为 1000 × 700 pt，可随时关闭自动应用。
+- **键盘控制**：显示当前内置和外接键盘；连接可信外接键盘后，可暂时禁用内置键盘。关闭开关、退出、选定外接断连或睡眠会结束本次禁用，不自动重新开启。
+- **统一权限**：首次在同一页配置辅助功能、输入监控和键盘服务。安装服务时由 macOS 请求管理员授权，后续切换无需重复输入密码；同时检查后台进程是否真正获得输入权限。
+- **清晰的状态**：未授权页只显示权限入口；保存状态、连接中和恢复中直接可见。菜单栏提供设置、权限设置和退出入口。
 
-当前应用界面为简体中文。
+界面目前为简体中文。以下为实际 SwiftUI 组件使用示例状态的离屏渲染，**不是实机授权或硬件测试截图**。
+
+<img src="docs/images/permissions.png" width="760" alt="统一权限配置界面">
+<img src="docs/images/keyboard.png" width="760" alt="键盘控制界面示例">
 
 ## 安装与使用
 
-提供免费 DMG 测试版，**仅临时签名，没有 Developer ID 签名和 Apple 公证**。从 [Releases](https://github.com/Luvisdaisy/finder-fixer/releases) 下载 DMG，将 App 拖到“应用程序”，无需 Xcode。首次打开可能被 macOS 拦截；系统允许时，确认来源可信后可在“隐私与安全性”中选择“仍要打开”。详见[安装与更新说明](INSTALL.md)。
+1. 下载 `HTools-0.2.0-universal.dmg`，打开后将 `HTools.app` 拖入“应用程序”。
+2. 推出 DMG，打开安装后的 HTools，依次完成权限页的三项配置。
+3. 在“访达窗口”保存宽高，或在“键盘控制”打开禁用开关。
 
-也可以安装完整 Xcode 及命令行工具，从源码构建：
+这是免费预览版：**临时签名，无 Developer ID 签名或 Apple 公证**。首次打开可能被系统拦截，仅在确认来源可信时按系统“仍要打开”流程操作。详见 [INSTALL.md](INSTALL.md)。
 
-```sh
-git clone https://github.com/Luvisdaisy/finder-fixer.git
-cd finder-fixer
-./scripts/build.sh
-open build/Build/Products/Release/finder-fixer.app
-```
+更新时先退出旧程序，用新 App 替换；在权限页更新键盘服务，系统也可能要求重新添加隐私权限。卸载前先从权限页的“管理服务”移除服务，再删除 App。关闭设置窗口不会退出菜单栏应用。
 
-1. 在“系统设置 → 隐私与安全性 → 辅助功能”中添加并开启刚构建的 `finder-fixer.app`。
-2. 在菜单栏打开设置，输入宽高并保存，开启“自动应用到新窗口”。
-3. 新开一个访达窗口（⌘N），查看尺寸效果。
+## 兼容性与验证边界
 
-宽高是窗口外框的逻辑点（pt），不是物理像素；Finder 自身最小尺寸和屏幕可用区域可能限制实际尺寸。关闭设置窗后应用继续运行，退出请使用菜单栏菜单。
-
-权限仅用于观察和调整 Finder 窗口，不读取文件内容。重建临时签名的应用后，可能需要重新添加辅助功能授权。详见[隐私说明](PRIVACY.md)。
-
-## 兼容性与限制
-
-| 项目 | 当前状态 |
+| 项目 | 状态 |
 | --- | --- |
-| 应用部署目标 | macOS 13+；不代表所有版本均已实机验证 |
-| 既有桌面验证 | macOS 26.6.2 / Apple Silicon / 单屏 |
-| 构建环境 | 已在 Xcode 27 构建；测试 target 要求 macOS 14+ |
-| 特殊窗口 | 跳过全屏、最小化和非标准窗口；平铺／最大化行为受系统限制 |
-| 尚未实机验证 | 多屏、Intel、旧 macOS、完整 VoiceOver 与部分权限竞态 |
-| 暂未提供 | 登录启动、自动更新、按文件夹记忆、其他应用窗口管理 |
+| 部署目标 | macOS 13+，通用 arm64 / x86_64 安装包 |
+| 已验证环境 | macOS 26.6.2、Apple Silicon |
+| 键盘实际反馈 | 用户已确认修正后台权限后的集成版可用 |
+| 自动化 | 尺寸策略、偏好迁移、设备筛选、IPC、会话与权限判定测试；构建、签名与 DMG 检查 |
+| 待覆盖 | Intel、旧 macOS、多屏、完整 VoiceOver、USB/蓝牙断连、崩溃和睡眠恢复的系统化物理矩阵 |
 
-单元测试验证尺寸策略与设置逻辑，不替代真实 Finder 桌面验收。
+按键功能不承诺屏蔽电源键或 Touch ID。设备识别有歧义、没有可信外接键盘时拒绝启用。后台心跳失联 3 秒尝试释放，5 秒独立保护退出；这不能替代真实硬件恢复测试。详见 [验证记录](docs/manual-testing.md) 和 [隐私说明](PRIVACY.md)。
 
-## 开发
+## 从源码构建
+
+需要完整 Xcode 和命令行工具。
 
 ```sh
-./scripts/build.sh Debug
-./scripts/test.sh
+git clone https://github.com/Luvisdaisy/finder-fixer.git HTools
+cd HTools
+./scripts/build.sh
+open build/Build/Products/Release/HTools.app
 ```
 
-可直接打开 `finder-fixer.xcodeproj`。测试宿主不会启动 Finder 控制服务或展示设置窗口；自动化测试不需要辅助功能权限。
-
-```text
-finder-fixer/
-  App/               应用生命周期、菜单栏、设置窗口
-  Settings/          SwiftUI 界面、编辑草稿与配置协调
-  WindowManagement/  Finder 事件监听、窗口筛选与尺寸策略
-  Infrastructure/    辅助功能权限入口、偏好持久化
-  Resources/         已生成的应用和菜单栏图标
-finder-fixerTests/    尺寸策略与偏好/草稿回归测试
-scripts/             构建、测试、工程及图标生成工具
-assets/              图标源素材
+```sh
+./scripts/test.sh          # 不安装服务、不执行键盘禁用
+./scripts/package-dmg.sh   # 生成通用 DMG 和 SHA-256
 ```
 
-[更新记录](CHANGELOG.md) · [DMG 打包与发布](RELEASING.md)
+打开 `HTools.xcodeproj` 即可开发。新增 Swift 文件后运行 `python3 scripts/create-project.py`。
 
-## 反馈与许可证
+[架构](docs/design.md) · [界面设计](docs/ui-design.md) · [贡献指南](CONTRIBUTING.md) · [发布流程](RELEASING.md) · [更新记录](CHANGELOG.md)
 
-请通过 [Issues](https://github.com/Luvisdaisy/finder-fixer/issues) 报告问题，附上系统版本、芯片架构、显示器配置和复现步骤。请勿上传含私人文件名的桌面截图或完整系统日志。贡献前请阅读 [CONTRIBUTING.md](CONTRIBUTING.md)；安全问题请参阅 [SECURITY.md](SECURITY.md)。
-
-项目采用 [MIT License](LICENSE)。Finder 和 macOS 是 Apple 的商标；本项目为独立社区工具，与 Apple 无隶属或背书关系。
+GitHub 仓库地址保留原 URL，旧发布历史保留；当前应用、工程与产品均名为 HTools。采用 [MIT](LICENSE) 许可证。Finder 和 macOS 为 Apple 商标，本项目与 Apple 无隶属或背书关系。

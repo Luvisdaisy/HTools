@@ -5,13 +5,16 @@ DerivedData/
 xcuserdata/
 *.xcresult
 dist/
+.build/
+.swiftpm/
 
 # Local tools, planning records and raw desktop/build evidence
 .codex/
 .agents/
 openspec/
 output/
-docs/
+docs/evidence/
+docs/local-history/
 
 # Credentials and local configuration
 .env
@@ -26,3 +29,6 @@ docs/
 .venv/
 __pycache__/
 *.pyc
+
+# Raw local hardware records are not public release artifacts
+KeyboardGuardPOC/Evidence/
