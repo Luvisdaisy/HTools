@@ -5,18 +5,18 @@ cd "$(dirname "$0")/.."
 mkdir -p build dist
 work_dir="$(mktemp -d "$PWD/build/package.XXXXXX")"
 trap 'rm -rf "$work_dir"' EXIT
-xcodebuild -project finder-fixer.xcodeproj -scheme finder-fixer \
+xcodebuild -project HTools.xcodeproj -scheme HTools \
     -configuration Release -derivedDataPath "$work_dir/DerivedData" \
     -destination 'generic/platform=macOS' ARCHS='arm64 x86_64' \
     ONLY_ACTIVE_ARCH=NO CODE_SIGN_IDENTITY=- CODE_SIGN_STYLE=Manual build
-app="$work_dir/DerivedData/Build/Products/Release/finder-fixer.app"
+app="$work_dir/DerivedData/Build/Products/Release/HTools.app"
 version=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$app/Contents/Info.plist")
-name="Finder-Fixer-${version}-universal.dmg"
+name="HTools-${version}-universal.dmg"
 if [[ -e "dist/$name" || -e "dist/$name.sha256" ]]; then
     echo "Refusing to overwrite dist/$name or its checksum. Move existing artifacts first." >&2
     exit 1
 fi
-architectures="$(lipo -archs "$app/Contents/MacOS/finder-fixer")"
+architectures="$(lipo -archs "$app/Contents/MacOS/HTools")"
 for architecture in arm64 x86_64; do
     case " $architectures " in
         *" $architecture "*) ;;
@@ -27,11 +27,11 @@ codesign --verify --deep --strict --verbose=2 "$app"
 codesign -dv "$app" 2>&1 | tee "$work_dir/signature.txt"
 grep -q '^Signature=adhoc$' "$work_dir/signature.txt"
 mkdir "$work_dir/image"
-ditto "$app" "$work_dir/image/finder-fixer.app"
+ditto "$app" "$work_dir/image/HTools.app"
 ln -s /Applications "$work_dir/image/Applications"
 cp INSTALL.md "$work_dir/image/INSTALL.md"
 cp LICENSE "$work_dir/image/LICENSE.txt"
-hdiutil create -volname "Finder Fixer $version" -srcfolder "$work_dir/image" \
+hdiutil create -volname "HTools $version" -srcfolder "$work_dir/image" \
     -format UDZO "$work_dir/$name"
 hdiutil verify "$work_dir/$name"
 mv "$work_dir/$name" "dist/$name"

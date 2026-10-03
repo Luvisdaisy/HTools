@@ -1,5 +1,5 @@
 name: Bug report / 问题反馈
-description: Report a reproducible issue with Finder Fixer.
+description: Report a reproducible issue with HTools.
 body:
   - type: markdown
     attributes:

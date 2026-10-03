@@ -22,7 +22,7 @@ source.putalpha(mask.resize(source.size, Image.Resampling.LANCZOS))
 master = source.resize((1024, 1024), Image.Resampling.LANCZOS)
 master.save(ROOT / 'assets/app-icon.png')
 
-catalog = ROOT / 'finder-fixer/Resources/Assets.xcassets'
+catalog = ROOT / 'HTools/Resources/Assets.xcassets'
 iconset = catalog / 'AppIcon.appiconset'
 iconset.mkdir(parents=True, exist_ok=True)
 info = {'version': 1, 'author': 'xcode'}
