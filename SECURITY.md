@@ -4,7 +4,7 @@ Only the latest published version is maintained. Preview releases have limited c
 
 ## Reporting a vulnerability
 
-Please use [GitHub private vulnerability reporting](https://github.com/Luvisdaisy/finder-fixer/security/advisories/new). Include affected version, macOS version, reproduction steps and impact. Do not include credentials, private documents or unredacted desktop logs.
+Please use [GitHub private vulnerability reporting](https://github.com/Luvisdaisy/HTools/security/advisories/new). Include affected version, macOS version, reproduction steps and impact. Do not include credentials, private documents or unredacted desktop logs.
 
 If private reporting is unavailable, open an issue asking for a private contact channel without disclosing vulnerability details. There is no guaranteed response time or bug bounty.
 

@@ -4,7 +4,7 @@
 
 ## 安装与首次打开
 
-1. 从 [GitHub Releases](https://github.com/Luvisdaisy/finder-fixer/releases) 下载 `HTools-<版本>-universal.dmg`，无需 Xcode。
+1. 从 [GitHub Releases](https://github.com/Luvisdaisy/HTools/releases) 下载 `HTools-<版本>-universal.dmg`，无需 Xcode。
 2. 打开 DMG，将 `HTools.app` 拖入 `Applications`（应用程序）。推出磁盘映像，再从“应用程序”打开 App。
 3. 本测试版仅使用 ad-hoc 临时签名，**没有 Apple Developer ID 签名和公证**。若 macOS 阻止首次打开，仅在确认下载来源可信后，前往“系统设置 → 隐私与安全性”，找到此次拦截并选择“仍要打开”，按系统提示确认。不同 macOS 版本或受管理设备可能不提供此选项。不要关闭系统安全保护；如提示包含恶意软件或其他异常，请停止安装并反馈。
 4. 首次启动进入权限页，逐项配置辅助功能、输入监控和键盘控制服务。系统隐私设置需分别开启 HTools；服务安装由 macOS 请求管理员授权。三项就绪后点击“开始使用”。系统要求重启应用时按提示重启，返回后会重新检查状态。

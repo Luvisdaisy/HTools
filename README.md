@@ -4,7 +4,7 @@
 
 让新建访达窗口保持合适的尺寸，用外接键盘时按需禁用内置键盘。
 
-[下载 v0.2.1](https://github.com/Luvisdaisy/finder-fixer/releases/tag/v0.2.1) · [English](README.en.md) · [安装与更新](INSTALL.md) · [使用指南](docs/usage.md)
+[下载 v0.2.1](https://github.com/Luvisdaisy/HTools/releases/tag/v0.2.1) · [English](README.en.md) · [安装与更新](INSTALL.md) · [使用指南](docs/usage.md)
 
 HTools 是原 Finder Fixer 的新版本，一个原生 macOS 菜单栏工具，无账号、联网服务和第三方运行依赖。
 
@@ -47,7 +47,7 @@ HTools 是原 Finder Fixer 的新版本，一个原生 macOS 菜单栏工具，�
 需要完整 Xcode 26+（Icon Composer 图标）和命令行工具。
 
 ```sh
-git clone https://github.com/Luvisdaisy/finder-fixer.git HTools
+git clone https://github.com/Luvisdaisy/HTools.git HTools
 cd HTools
 ./scripts/build.sh
 open build/Build/Products/Release/HTools.app
