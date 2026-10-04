@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.2.1 — 2026-10-04
+
+- Simplify the right-click menu to Settings and Quit text only, without icons or shortcut labels.
+- Select Xcode 26.6 explicitly in CI for native Icon Composer assets and run shared keyboard core tests.
+- Open a non-detachable settings popover below the menu bar icon on left click; retain shortcuts on right click and dismiss with Escape, Command-W or an outside click.
+- Replace the sidebar with compact tabs in a 400 pt panel, adapt height to each page, and preserve draft validation and authorization safeguards.
+
+- Adopt the approved Flow H/tool icon as a native Icon Composer asset, with system masking and generated compatibility images for older macOS releases.
+- Use matching monochrome menu bar templates for light/dark appearance; preserve the approved vector geometry and document regeneration.
+
 ## 0.2.0 — 2026-10-03
 
 - Rename app, project and products to HTools; migrate valid window preferences.

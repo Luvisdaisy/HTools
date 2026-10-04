@@ -5,12 +5,12 @@ extension Notification.Name {
     static let showHToolsPermissions = Notification.Name("showHToolsPermissions")
 }
 
-final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
+final class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate {
     private var model: SettingsModel!
     private var permissions: PermissionsModel!
     private var keyboard: KeyboardControlModel!
     private var menuBar: MenuBarController?
-    private var settingsWindow: NSWindow?
+    private var settingsPopover: NSPopover?
     private var notifications: [NSObjectProtocol] = []
     private var workspaceNotifications: [NSObjectProtocol] = []
 
@@ -26,7 +26,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         permissions.start()
         keyboard.start()
         menuBar = MenuBarController(showSettings: { [weak self] in self?.showSettings() },
-                                    showPermissions: { [weak self] in self?.showPermissions() })
+                                    toggleSettings: { [weak self] in self?.toggleSettings() })
         installApplicationMenu()
         model.start()
         notifications.append(NotificationCenter.default.addObserver(forName: NSApplication.didChangeScreenParametersNotification, object: nil, queue: .main) { [weak self] _ in self?.model.updateDisplays() })
@@ -40,30 +40,50 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     }
 
     func showSettings() {
-        if settingsWindow == nil {
-            let hosting = NSHostingController(rootView: SettingsView(model: model, keyboard: keyboard, permissions: permissions))
-            let window = NSWindow(contentViewController: hosting)
-            window.title = "HTools"
-            window.styleMask = [.titled, .closable, .miniaturizable]
-            window.collectionBehavior = [.fullScreenNone]
-            window.isReleasedWhenClosed = false
-            window.delegate = self
-            window.center()
-            settingsWindow = window
+        guard let button = menuBar?.anchorButton else { return }
+        if settingsPopover == nil {
+            let popover = NSPopover()
+            popover.behavior = .transient
+            popover.animates = false
+            popover.delegate = self
+            popover.contentViewController = NSHostingController(rootView:
+                SettingsView(model: model, keyboard: keyboard, permissions: permissions,
+                             onSizeChange: { [weak popover] size in popover?.contentSize = size }))
+            popover.contentSize = NSSize(width: 400, height: 348)
+            settingsPopover = popover
         }
         NSApp.activate(ignoringOtherApps: true)
-        if settingsWindow?.isMiniaturized == true { settingsWindow?.deminiaturize(nil) }
-        settingsWindow?.makeKeyAndOrderFront(nil)
+        if settingsPopover?.isShown != true {
+            settingsPopover?.show(relativeTo: button.bounds, of: button, preferredEdge: .minY)
+        }
+        if let window = settingsPopover?.contentViewController?.view.window {
+            window.isMovable = false
+            window.isMovableByWindowBackground = false
+            window.makeKey()
+        }
         model.service.refresh()
         permissions.refresh()
     }
+
+    private func toggleSettings() {
+        if settingsPopover?.isShown == true { closeSettings() }
+        else { showSettings() }
+    }
+
+    @objc private func closeSettings() { settingsPopover?.performClose(nil) }
+
+    func popoverShouldClose(_ popover: NSPopover) -> Bool {
+        // Keep system authorization and invalid drafts visible until resolved.
+        !permissions.busy && model.prepareToClose()
+    }
+
+    func popoverShouldDetach(_ popover: NSPopover) -> Bool { false }
 
     private func showPermissions() {
         showSettings()
         NotificationCenter.default.post(name: .showHToolsPermissions, object: nil)
     }
 
-    func windowShouldClose(_ sender: NSWindow) -> Bool { model.prepareToClose() }
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool { showSettings(); return true }
     func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
         guard model != nil else { return .terminateNow }
@@ -93,7 +113,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         settings.target = self; submenu.addItem(settings)
         let permissionItem = NSMenuItem(title: "权限设置…", action: #selector(openPermissions), keyEquivalent: "")
         permissionItem.target = self; submenu.addItem(permissionItem)
-        submenu.addItem(NSMenuItem(title: "关闭窗口", action: #selector(NSWindow.performClose(_:)), keyEquivalent: "w"))
+        let close = NSMenuItem(title: "收起面板", action: #selector(closeSettings), keyEquivalent: "w")
+        close.target = self; submenu.addItem(close)
         submenu.addItem(.separator())
         submenu.addItem(NSMenuItem(title: "退出 HTools", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q"))
         app.submenu = submenu; main.addItem(app)

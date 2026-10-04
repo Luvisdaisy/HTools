@@ -1,6 +1,6 @@
 # 发布说明入口
 
-当前发布 **HTools v0.2.0 通用 DMG 预览版**，不再是仅源码发布。
+当前发布 **HTools v0.2.1 通用 DMG 预览版**，不再是仅源码发布。
 
 权威步骤见根目录 [RELEASING.md](../RELEASING.md)，用户安装与更新见 [INSTALL.md](../INSTALL.md)，验证边界见 [manual-testing.md](manual-testing.md)。
 

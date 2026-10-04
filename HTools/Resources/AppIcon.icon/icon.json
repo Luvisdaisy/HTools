@@ -1,0 +1,26 @@
+{
+  "fill": {
+    "solid": "srgb:0.145098,0.152941,0.168627,1.000000"
+  },
+  "groups": [
+    {
+      "name": "Flow",
+      "layers": [
+        {
+          "image-name": "flow.svg",
+          "name": "H + tool",
+          "glass": false
+        }
+      ],
+      "shadow": {
+        "kind": "neutral",
+        "opacity": 0
+      }
+    }
+  ],
+  "supported-platforms": {
+    "squares": [
+      "macOS"
+    ]
+  }
+}

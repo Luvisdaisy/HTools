@@ -4,8 +4,8 @@
 
 ## 开发环境
 
-- macOS 与完整 Xcode，命令行工具需指向对应 Xcode。
-- App 部署目标 macOS 13，XCTest target 最低 macOS 14；当前本机使用 Xcode 27。
+- macOS 与完整 Xcode 26+（用于编译 Icon Composer 图标），命令行工具需指向对应 Xcode。
+- App 部署目标 macOS 13，XCTest target 最低 macOS 14；CI 固定 Xcode 26.6，当前本机使用 Xcode 27。
 - 直接打开 `HTools.xcodeproj`；应用构建无第三方依赖。
 
 ```sh

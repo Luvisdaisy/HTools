@@ -23,6 +23,10 @@ assetPath='HTools/Resources/Assets.xcassets'
 assetRef=obj(assetPath,f'isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "{assetPath}"; sourceTree = SOURCE_ROOT;')
 fileRefs[assetPath] = assetRef
 assetBuild=obj(assetPath+'-build',f'isa = PBXBuildFile; fileRef = {assetRef};')
+iconPath='HTools/Resources/AppIcon.icon'
+iconRef=obj(iconPath,f'isa = PBXFileReference; lastKnownFileType = folder.icon; path = "{iconPath}"; sourceTree = SOURCE_ROOT;')
+fileRefs[iconPath] = iconRef
+iconBuild=obj(iconPath+'-build',f'isa = PBXBuildFile; fileRef = {iconRef};')
 appProduct=obj('app-product','isa = PBXFileReference; explicitFileType = wrapper.application; path = "HTools.app"; sourceTree = BUILT_PRODUCTS_DIR;')
 testProduct=obj('test-product','isa = PBXFileReference; explicitFileType = wrapper.cfbundle; path = "HToolsTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR;')
 products=obj('products',f'isa = PBXGroup; children = ({appProduct}, {testProduct}); name = Products; sourceTree = "<group>";')
@@ -47,12 +51,12 @@ coreGroup = source_group('KeyboardGuardPOC/Sources/KeyboardCore')
 main=obj('main',f'isa = PBXGroup; children = ({appGroup}, {testsGroup}, {coreGroup}, {products}); sourceTree = "<group>";')
 common='CLANG_ENABLE_MODULES = YES; MACOSX_DEPLOYMENT_TARGET = 13.0; SDKROOT = macosx; SWIFT_VERSION = 5.0; CODE_SIGN_STYLE = Manual; CODE_SIGN_IDENTITY = "-"; '
 pc=configs('project',common,'SWIFT_OPTIMIZATION_LEVEL = "-Onone"; DEBUG_INFORMATION_FORMAT = dwarf; ENABLE_TESTABILITY = YES; SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG; ','SWIFT_COMPILATION_MODE = wholemodule; DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym"; ')
-ac=configs('app','ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon; PRODUCT_NAME = "HTools"; PRODUCT_MODULE_NAME = HTools; PRODUCT_BUNDLE_IDENTIFIER = "local.HTools"; GENERATE_INFOPLIST_FILE = YES; INFOPLIST_KEY_CFBundleDisplayName = "HTools"; INFOPLIST_KEY_LSUIElement = YES; INFOPLIST_KEY_NSHumanReadableCopyright = ""; ENABLE_APP_SANDBOX = NO; ENABLE_HARDENED_RUNTIME = YES; CURRENT_PROJECT_VERSION = 3; MARKETING_VERSION = 0.2.0; LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks"; ')
+ac=configs('app','ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon; PRODUCT_NAME = "HTools"; PRODUCT_MODULE_NAME = HTools; PRODUCT_BUNDLE_IDENTIFIER = "local.HTools"; GENERATE_INFOPLIST_FILE = YES; INFOPLIST_KEY_CFBundleDisplayName = "HTools"; INFOPLIST_KEY_LSUIElement = YES; INFOPLIST_KEY_NSHumanReadableCopyright = ""; ENABLE_APP_SANDBOX = NO; ENABLE_HARDENED_RUNTIME = YES; CURRENT_PROJECT_VERSION = 8; MARKETING_VERSION = 0.2.1; LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks"; ')
 tc=configs('tests','MACOSX_DEPLOYMENT_TARGET = 14.0; PRODUCT_NAME = "HToolsTests"; PRODUCT_BUNDLE_IDENTIFIER = "local.HTools.tests"; GENERATE_INFOPLIST_FILE = YES; TEST_HOST = "$(BUILT_PRODUCTS_DIR)/HTools.app/Contents/MacOS/HTools"; BUNDLE_LOADER = "$(TEST_HOST)"; LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks"; ')
 for name,sources in [('app',appSources),('tests',testSources)]:
     obj(name+'-sources',f'isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = ({", ".join(sources)}); runOnlyForDeploymentPostprocessing = 0;')
     for phase in ['Frameworks','Resources']:
-        resources=assetBuild if name=='app' and phase=='Resources' else ''
+        resources=', '.join([assetBuild, iconBuild]) if name=='app' and phase=='Resources' else ''
         obj(name+phase,f'isa = PBX{phase}BuildPhase; buildActionMask = 2147483647; files = ({resources}); runOnlyForDeploymentPostprocessing = 0;')
 proxy=obj('proxy',f'isa = PBXContainerItemProxy; containerPortal = {ref("project")}; proxyType = 1; remoteGlobalIDString = {ref("app")}; remoteInfo = "HTools";')
 dep=obj('dependency',f'isa = PBXTargetDependency; target = {ref("app")}; targetProxy = {proxy};')
