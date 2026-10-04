@@ -2,7 +2,7 @@
 
 A native macOS menu bar utility for new Finder window sizes and optional built-in keyboard control. HTools succeeds Finder Fixer.
 
-[Download v0.2.1](https://github.com/Luvisdaisy/finder-fixer/releases/tag/v0.2.1) · [简体中文](README.md) · [Installation](INSTALL.md)
+[Download v0.2.1](https://github.com/Luvisdaisy/HTools/releases/tag/v0.2.1) · [简体中文](README.md) · [Installation](INSTALL.md)
 
 ## Features
 
@@ -32,7 +32,7 @@ Intel, older macOS versions, multiple displays, complete VoiceOver support and a
 ## Development
 
 ```sh
-git clone https://github.com/Luvisdaisy/finder-fixer.git HTools
+git clone https://github.com/Luvisdaisy/HTools.git HTools
 cd HTools
 ./scripts/build.sh
 ./scripts/test.sh
