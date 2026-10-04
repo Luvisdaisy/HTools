@@ -2,6 +2,10 @@
 
 原生 SwiftUI / AppKit 菜单栏应用，应用和测试源码位于 `HTools/`、`HToolsTests/`。工程由 `scripts/create-project.py` 确定性生成，无第三方运行依赖。
 
+## 菜单栏与面板
+
+`MenuBarController` 区分左右键：左键切换设置面板，右键提供无图标、无快捷键的两项菜单。`AppDelegate` 使用不可分离的瞬时 `NSPopover`，锚定菜单栏按钮；`SettingsView` 以顶部标签导航，根据页面与设备数更新 400 pt 宽的内容尺寸。关闭前校验草稿，授权中阻止关闭；隐藏面板不改变后台服务状态。
+
 ## 访达
 
 `SettingsModel` 管理草稿及偏好，`PreferencesStore` 迁移原应用的有效尺寸设置。`FinderWindowService` 在串行队列中维护 AX 观察器与窗口基线，只处理新标准窗口；策略层负责尺寸夹限和屏幕坐标换算。启动、保存、重新聚焦、标签和最小化恢复不会批量调整已有窗口。

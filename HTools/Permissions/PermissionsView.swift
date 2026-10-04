@@ -6,24 +6,24 @@ struct PermissionsView: View {
     @State private var confirmRemoval = false
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 22) {
+        VStack(alignment: .leading, spacing: 12) {
             HStack(alignment: .top) {
-                PageHeading(title: model.setupCompleted ? "权限设置" : "欢迎使用 HTools",
-                            subtitle: model.status.complete ? "配置已就绪，可以开始使用。" : "完成三项配置，开启全部功能。")
+                Text(model.status.complete ? "全部就绪" : "完成授权，开启全部功能")
+                    .font(.system(size: 12, weight: .medium))
                 Spacer()
                 Text("\(model.status.completedSteps) / 3")
-                    .font(.system(size: 12, weight: .medium, design: .monospaced))
+                    .font(.system(size: 11, weight: .medium, design: .monospaced))
                     .foregroundStyle(model.status.complete ? Color.green : Color.secondary)
-                    .padding(.horizontal, 10).padding(.vertical, 6)
+                    .padding(.horizontal, 8).padding(.vertical, 3)
                     .background(Color.primary.opacity(0.04), in: Capsule())
             }
             VStack(spacing: 0) {
-                row("辅助功能", detail: "自动调整新建访达窗口的尺寸", icon: "macwindow",
+                row("辅助功能", detail: "调整新建访达窗口尺寸", icon: "macwindow",
                     ready: model.status.accessibility, action: "去授权", perform: model.requestAccessibility)
-                Divider().padding(.vertical, 16)
-                row("输入监控", detail: "控制内置键盘，不记录输入内容", icon: "keyboard",
+                Divider().padding(.vertical, 10)
+                row("输入监控", detail: "控制键盘，不记录输入", icon: "keyboard",
                     ready: model.status.inputMonitoring, action: "去授权", perform: model.requestInputMonitoring)
-                Divider().padding(.vertical, 16)
+                Divider().padding(.vertical, 10)
                 row("键盘控制服务", detail: serviceDetail, icon: "lock.shield",
                     ready: model.status.keyboardService && model.status.workerInputMonitoring,
                     action: serviceAction) {
@@ -31,7 +31,7 @@ struct PermissionsView: View {
                     else { model.configureService(install: true) }
                 }
             }
-            .settingsCard()
+
             HStack(alignment: .top, spacing: 8) {
                 Image(systemName: model.status.complete ? "checkmark.shield" : "info.circle")
                 Text(hint).fixedSize(horizontal: false, vertical: true)
@@ -54,7 +54,7 @@ struct PermissionsView: View {
                 Button(model.setupCompleted ? "返回功能" : "开始使用") {
                     model.completeSetup(); continueToApp()
                 }
-                .buttonStyle(.borderedProminent).controlSize(.large)
+                .buttonStyle(.borderedProminent).controlSize(.regular)
                 .disabled(!model.status.complete || model.busy)
             }
         }
@@ -73,7 +73,7 @@ struct PermissionsView: View {
     }
     private var serviceDetail: String {
         if model.status.keyboardService && !model.status.workerInputMonitoring { return "已连接，等待后台输入权限" }
-        if model.serviceInstalled && !model.status.keyboardService { return "需与当前版本匹配，更新后即可使用" }
+        if model.serviceInstalled && !model.status.keyboardService { return "更新以匹配当前版本" }
         return "安装时授权，之后切换无需密码"
     }
     private var hint: String {
@@ -81,15 +81,15 @@ struct PermissionsView: View {
         if model.status.keyboardService && !model.status.workerInputMonitoring {
             return "后台输入权限尚未就绪。请确认输入监控已允许当前 HTools，按系统提示重启后重新检查。"
         }
-        return "按系统提示逐项授权，返回此窗口会自动检查。升级应用后，可能需要更新服务或重新确认权限。"
+        return "按系统提示授权后，点菜单栏图标返回。升级后可能需要更新服务。"
     }
 
     private func row(_ title: String, detail: String, icon: String, ready: Bool,
                      action: String, perform: @escaping () -> Void) -> some View {
-        HStack(spacing: 12) {
-            Image(systemName: icon).font(.system(size: 19)).frame(width: 28).foregroundStyle(Color.accentColor)
-            VStack(alignment: .leading, spacing: 5) {
-                Text(title).font(.system(size: 13, weight: .medium))
+        HStack(spacing: 8) {
+            Image(systemName: icon).font(.system(size: 16)).frame(width: 22).foregroundStyle(Color.accentColor)
+            VStack(alignment: .leading, spacing: 3) {
+                Text(title).font(.system(size: 12, weight: .medium))
                 Text(detail).font(.system(size: 11)).foregroundStyle(.secondary)
                     .fixedSize(horizontal: false, vertical: true)
             }

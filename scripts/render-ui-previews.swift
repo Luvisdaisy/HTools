@@ -16,11 +16,13 @@ struct PreviewRenderer {
         model.service.onStatus?(FinderServiceStatus(trusted: true))
         let keyboard = KeyboardControlModel.preview()
         try FileManager.default.createDirectory(atPath: "docs/images", withIntermediateDirectories: true)
-        for (name, page) in [("permissions", SettingsPage.permissions), ("finder", .finder), ("keyboard", .keyboard), ("keyboard-gate", .keyboard), ("keyboard-dark", .keyboard)] {
+        for (name, page) in [("permissions", SettingsPage.permissions), ("permissions-ready", .permissions), ("finder", .finder), ("finder-invalid", .finder), ("keyboard", .keyboard), ("keyboard-gate", .keyboard), ("keyboard-dark", .keyboard)] {
             let permissions = PermissionsModel.preview(defaults: defaults, ready: name != "permissions" && name != "keyboard-gate")
+            model.resetDraft()
+            if name == "finder-invalid" { model.widthText = "50" }
             let content = SettingsView(model: model, keyboard: keyboard, permissions: permissions, initialPage: page)
             let host = NSHostingView(rootView: content)
-            host.frame = NSRect(x: 0, y: 0, width: 760, height: 520)
+            host.frame = NSRect(origin: .zero, size: host.fittingSize)
             let window = NSWindow(contentRect: host.frame, styleMask: [.borderless], backing: .buffered, defer: false)
             window.appearance = NSAppearance(named: name.hasSuffix("dark") ? .darkAqua : .aqua)
             window.contentView = host
