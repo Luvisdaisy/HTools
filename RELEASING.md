@@ -2,7 +2,7 @@
 
 安装包使用 ad-hoc 签名，不需要付费开发者账号，没有 Developer ID 签名或公证。用户安装流程见 [INSTALL.md](INSTALL.md)。
 
-当前版本：**v0.2.1（build 8）**。构建要求 Xcode 26+，CI 明确选择 Xcode 26.3。
+当前版本：**v0.2.1（build 8）**。构建要求 Xcode 26+，CI 明确选择 Xcode 26.6。
 
 1. 更新 `scripts/create-project.py` 的版本号和构建号，运行 `python3 scripts/create-project.py`；同步 CHANGELOG 和安装说明中的版本示例。
 2. 运行 `./scripts/test.sh`、`git diff --check`。提交源码后，确认对应提交的 GitHub CI 通过。

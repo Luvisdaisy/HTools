@@ -3,7 +3,7 @@
 ## 0.2.1 — 2026-10-04
 
 - Simplify the right-click menu to Settings and Quit text only, without icons or shortcut labels.
-- Select Xcode 26.3 explicitly in CI for native Icon Composer assets and run shared keyboard core tests.
+- Select Xcode 26.6 explicitly in CI for native Icon Composer assets and run shared keyboard core tests.
 - Open a non-detachable settings popover below the menu bar icon on left click; retain shortcuts on right click and dismiss with Escape, Command-W or an outside click.
 - Replace the sidebar with compact tabs in a 400 pt panel, adapt height to each page, and preserve draft validation and authorization safeguards.
 
