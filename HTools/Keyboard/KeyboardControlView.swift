@@ -56,7 +56,7 @@ struct KeyboardControlView: View {
                 ))
                 .labelsHidden().toggleStyle(.switch).controlSize(.small)
                 .disabled(model.busy || (model.state == .off && !model.canEnable))
-                .help(model.canEnable ? "关闭开关即可恢复内置键盘" : "需要识别到唯一的内置键盘和至少一个外接键盘")
+                .help(model.canEnable ? "无需外接键盘；关闭开关即可恢复内置键盘" : "需要识别到唯一可信的内置键盘")
             }
             .padding(12)
             .background(Color(nsColor: .controlBackgroundColor), in: RoundedRectangle(cornerRadius: 8))
@@ -68,8 +68,8 @@ struct KeyboardControlView: View {
         switch model.state {
         case .authorizing: return "正在连接键盘服务…"
         case .stopping: return "正在恢复内置键盘…"
-        case .on: return "已禁用 · 关闭开关即可恢复"
-        case .off: return model.canEnable ? "内置键盘正常使用" : "请连接外接键盘后再开启"
+        case .on: return "已禁用 · 外接断联不影响 · 关闭可恢复"
+        case .off: return model.canEnable ? "无需外接键盘，可随时手动开启" : "未能识别唯一可信的内置键盘"
         }
     }
 

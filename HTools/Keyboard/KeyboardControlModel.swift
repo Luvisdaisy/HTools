@@ -25,7 +25,7 @@ final class KeyboardControlModel: ObservableObject {
         manager.changed = { [weak self] kind, device in
             guard let self else { return }
             self.refresh()
-            if kind == "removed", device.registryID == self.selection?.externalID || device.registryID == self.selection?.internalID {
+            if kind == "removed", device.registryID == self.selection?.internalID {
                 self.disable()
             }
         }
@@ -98,7 +98,7 @@ final class KeyboardControlModel: ObservableObject {
             connection.interruptionHandler = failed
             connection.resume()
             let remote = connection.remoteObjectProxyWithErrorHandler { _ in failed() } as? KeyboardServiceProtocol
-            remote?.startSession(path: listener.path, internalID: selection.internalID, externalID: selection.externalID) { [weak self] error in
+            remote?.startSession(path: listener.path, internalID: selection.internalID) { [weak self] error in
                 DispatchQueue.main.async {
                     guard let self, self.runID == id, let error else { return }
                     self.fail(error)
@@ -168,7 +168,7 @@ final class KeyboardControlModel: ObservableObject {
 
 #if UI_PREVIEW
 extension KeyboardControlModel {
-    static func preview() -> KeyboardControlModel {
+    static func preview(externalConnected: Bool = true, disabled: Bool = false) -> KeyboardControlModel {
         let model = KeyboardControlModel()
         model.devices = [
             KeyboardDevice(registryID: 1, product: "Apple Internal Keyboard / Trackpad", transport: "FIFO",
@@ -177,6 +177,8 @@ extension KeyboardControlModel {
             KeyboardDevice(registryID: 2, product: "外接蓝牙键盘", transport: "Bluetooth Low Energy",
                            builtIn: nil, primary: HIDUsage(1, 6), usages: [HIDUsage(1, 6)], ancestry: ["IOHIDUserDevice"])
         ]
+        if !externalConnected { model.devices.removeLast() }
+        if disabled { model.state = .on }
         return model
     }
 }

@@ -12,9 +12,10 @@ final class KeyboardIntegrationTests: XCTestCase {
                        primary: HIDUsage(1, 6), usages: [HIDUsage(1, 6)], ancestry: ["IOHIDUserDevice"])
     }
 
-    func testSelectionRequiresTrustedInternalAndExternal() {
-        XCTAssertEqual(KeyboardSelection.resolve([external(), builtIn()]), KeyboardSelection(internalID: 1, externalID: 2))
-        XCTAssertNil(KeyboardSelection.resolve([builtIn()]))
+    func testSelectionRequiresOnlyTrustedInternal() {
+        XCTAssertEqual(KeyboardSelection.resolve([external(), builtIn()]), KeyboardSelection(internalID: 1))
+        XCTAssertEqual(KeyboardSelection.resolve([builtIn()]), KeyboardSelection(internalID: 1))
+        XCTAssertNil(KeyboardSelection.resolve([]))
         XCTAssertNil(KeyboardSelection.resolve([external()]))
         XCTAssertNil(KeyboardSelection.resolve([builtIn(), builtIn(3), external()]))
         XCTAssertNil(KeyboardSelection.resolve([builtIn(), external(), external()]))
@@ -28,10 +29,53 @@ final class KeyboardIntegrationTests: XCTestCase {
         XCTAssertNil(KeyboardSelection.resolve([unknown, external()]))
     }
 
-    func testMultipleExternalsUseStableSelectionAndIgnoreVirtual() {
+    func testExternalDisconnectOrVirtualPresenceDoesNotChangeSelection() {
         var virtual = external(3); virtual.virtualProperty = true
-        XCTAssertEqual(KeyboardSelection.resolve([external(8), builtIn(), external(5), virtual])?.externalID, 5)
-        XCTAssertNil(KeyboardSelection.resolve([builtIn(), virtual]))
+        let selection = KeyboardSelection(internalID: 1)
+        XCTAssertEqual(KeyboardSelection.resolve([external(8), builtIn(), external(5), virtual]), selection)
+        XCTAssertEqual(KeyboardSelection.resolve([builtIn(), virtual]), selection)
+        XCTAssertEqual(KeyboardSelection.resolve([builtIn()]), selection)
+    }
+
+    private final class Controller: PhysicalKeyboardControlling {
+        var opened: [UInt64] = []
+        var closed: [UInt64] = []
+        func seize(_ id: UInt64) -> Int32 { opened.append(id); return 0 }
+        func release(_ id: UInt64) -> Int32 { closed.append(id); return 0 }
+    }
+
+    func testManualSessionWithoutExternalCanStopAndRestart() {
+        let controller = Controller(); let session = SeizeSession(controller: controller)
+        XCTAssertTrue(session.start(devices: [builtIn()], target: 1))
+        XCTAssertEqual(session.state, .blocked)
+        XCTAssertNil(session.external)
+        session.release(reason: "manual")
+        XCTAssertEqual(session.state, .available)
+        XCTAssertTrue(session.start(devices: [builtIn()], target: 1))
+        session.release(reason: "manual")
+        XCTAssertEqual(controller.opened, [1, 1])
+        XCTAssertEqual(controller.closed, [1, 1])
+    }
+
+    func testManualSessionIgnoresExternalRemovalButReleasesTarget() {
+        let controller = Controller(); let session = SeizeSession(controller: controller)
+        XCTAssertTrue(session.start(devices: [builtIn(), external(), external(3)], target: 1))
+        session.removed(2); session.removed(3)
+        XCTAssertEqual(session.state, .blocked)
+        XCTAssertTrue(controller.closed.isEmpty)
+        session.removed(1)
+        XCTAssertEqual(session.state, .available)
+        XCTAssertEqual(controller.closed, [1])
+    }
+
+    func testManualSessionStillRefusesAmbiguousOrNonInternalTargets() {
+        var uncertain = builtIn(3); uncertain.transport = "Unknown"; uncertain.ancestry = []
+        var composite = builtIn(); composite.usages.append(HIDUsage(1, 2))
+        for devices in [[builtIn(), builtIn(3)], [builtIn(), uncertain], [composite], [external()], []] {
+            let controller = Controller(); let session = SeizeSession(controller: controller)
+            XCTAssertFalse(session.start(devices: devices, target: 1))
+            XCTAssertTrue(controller.opened.isEmpty)
+        }
     }
 
     func testLeaseExpiresAndRenewalMovesDeadline() {
@@ -111,7 +155,7 @@ final class KeyboardIntegrationTests: XCTestCase {
     func testWorkerRefusesUnprivilegedLaunchBeforeHIDAccess() throws {
         guard geteuid() != 0 else { throw XCTSkip("Requires ordinary user") }
         let process = Process(); process.executableURL = Bundle.main.executableURL
-        process.arguments = ["--keyboard-worker", "/tmp/nonexistent", String(getpid()), String(getuid()), "1", "2"]
+        process.arguments = ["--keyboard-worker", "/tmp/nonexistent", String(getpid()), String(getuid()), "1"]
         try process.run(); process.waitUntilExit()
         XCTAssertEqual(process.terminationStatus, 2)
     }

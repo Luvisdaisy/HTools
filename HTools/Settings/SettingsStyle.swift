@@ -1,6 +1,7 @@
 import SwiftUI
 
 enum SettingsPage: String, CaseIterable {
+    case general = "通用设置"
     case finder = "访达窗口"
     case keyboard = "键盘控制"
     case permissions = "权限设置"

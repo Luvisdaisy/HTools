@@ -19,13 +19,14 @@ public final class SeizeSession {
     public init(controller: PhysicalKeyboardControlling) { self.controller = controller }
 
     @discardableResult
-    public func start(devices: [KeyboardDevice], target: UInt64, external: UInt64) -> Bool {
+    // Integrated manual control omits external; the POC supplies one to retain its guard.
+    public func start(devices: [KeyboardDevice], target: UInt64, external: UInt64? = nil) -> Bool {
         guard state == .available else { return false }
         let internals = devices.filter { $0.classification.role == .builtIn }
         guard Set(devices.map(\.registryID)).count == devices.count,
               internals.count == 1, internals[0].registryID == target,
               devices.filter({ $0.builtIn == true && $0.classification.role != .virtual }).count == 1,
-              devices.contains(where: { $0.registryID == external && $0.classification.role == .external }),
+              external.map({ id in devices.contains { $0.registryID == id && $0.classification.role == .external } }) ?? true,
               target != external else {
             lastError = "refused: ambiguous internal device or selected external absent"
             event(lastError!, state, nil)

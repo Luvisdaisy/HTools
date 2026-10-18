@@ -2,6 +2,20 @@
 // Uses isolated preferences and sample state, not a desktop screenshot.
 import AppKit
 import SwiftUI
+import ServiceManagement
+
+private struct PreviewLoginItemService: LoginItemServicing {
+    var status: SMAppService.Status
+    var registrationFails = false
+    func register() throws {
+        if registrationFails {
+            throw NSError(domain: "HTools.preview", code: 1, userInfo: [NSLocalizedDescriptionKey:
+                "系统未能注册登录项，请将 HTools 放入应用程序并检查系统登录项设置后重试。"])
+        }
+    }
+    func unregister() throws {}
+    func openSettings() {}
+}
 
 @main
 struct PreviewRenderer {
@@ -14,13 +28,19 @@ struct PreviewRenderer {
         defer { defaults.removePersistentDomain(forName: domain) }
         let model = SettingsModel(store: PreferencesStore(defaults: defaults))
         model.service.onStatus?(FinderServiceStatus(trusted: true))
-        let keyboard = KeyboardControlModel.preview()
         try FileManager.default.createDirectory(atPath: "docs/images", withIntermediateDirectories: true)
-        for (name, page) in [("permissions", SettingsPage.permissions), ("permissions-ready", .permissions), ("finder", .finder), ("finder-invalid", .finder), ("keyboard", .keyboard), ("keyboard-gate", .keyboard), ("keyboard-dark", .keyboard)] {
+        for (name, page) in [("general", SettingsPage.general), ("general-approval", .general), ("general-error", .general), ("general-error-dark", .general), ("general-dark", .general), ("permissions", .permissions), ("permissions-ready", .permissions), ("finder", .finder), ("finder-invalid", .finder), ("keyboard", .keyboard), ("keyboard-no-external", .keyboard), ("keyboard-disabled", .keyboard), ("keyboard-gate", .keyboard), ("keyboard-dark", .keyboard)] {
             let permissions = PermissionsModel.preview(defaults: defaults, ready: name != "permissions" && name != "keyboard-gate")
             model.resetDraft()
             if name == "finder-invalid" { model.widthText = "50" }
-            let content = SettingsView(model: model, keyboard: keyboard, permissions: permissions, initialPage: page)
+            let loginItem = LoginItemModel(service: PreviewLoginItemService(
+                status: name == "general-approval" ? .requiresApproval : .notRegistered,
+                registrationFails: name.contains("error")))
+            if name.contains("error") { loginItem.setEnabled(true) }
+            let keyboard = KeyboardControlModel.preview(
+                externalConnected: name != "keyboard-no-external" && name != "keyboard-disabled",
+                disabled: name == "keyboard-disabled")
+            let content = SettingsView(model: model, keyboard: keyboard, permissions: permissions, loginItem: loginItem, initialPage: page)
             let host = NSHostingView(rootView: content)
             host.frame = NSRect(origin: .zero, size: host.fittingSize)
             let window = NSWindow(contentRect: host.frame, styleMask: [.borderless], backing: .buffered, defer: false)

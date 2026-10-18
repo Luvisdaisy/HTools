@@ -103,9 +103,9 @@ final class PermissionsTests: XCTestCase {
 
     func testWorkerAndProbeUseUserSessionWithoutShellInterpretation() {
         let path = "/tmp/HTools.'$(id)/control"
-        let process = KeyboardService.sessionProcess(uid: 501, arguments: ["--keyboard-worker", path, "42", "501", "1", "2"])
+        let process = KeyboardService.sessionProcess(uid: 501, arguments: ["--keyboard-worker", path, "42", "501", "1"])
         XCTAssertEqual(process.executableURL?.path, "/bin/launchctl")
-        XCTAssertEqual(process.arguments, ["asuser", "501", KeyboardServiceIdentity.executable, "--keyboard-worker", path, "42", "501", "1", "2"])
+        XCTAssertEqual(process.arguments, ["asuser", "501", KeyboardServiceIdentity.executable, "--keyboard-worker", path, "42", "501", "1"])
         let probe = KeyboardService.sessionProcess(uid: 502, arguments: ["--keyboard-access-check"])
         XCTAssertEqual(probe.arguments, ["asuser", "502", KeyboardServiceIdentity.executable, "--keyboard-access-check"])
     }

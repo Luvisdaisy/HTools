@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.3.0 — 2026-10-18
+
+- Add an optional system-managed launch-at-login switch in General settings, including approval guidance and live status refresh.
+- Allow manual built-in keyboard blocking without an external keyboard; keep it blocked after external disconnection.
+- Preserve manual, target-removal, quit, sleep, session and heartbeat recovery; keep the standalone POC's explicit external guard. Update the keyboard service after replacing the app (protocol version 3).
+
 ## 0.2.1 — 2026-10-04
 
 - Simplify the right-click menu to Settings and Quit text only, without icons or shortcut labels.

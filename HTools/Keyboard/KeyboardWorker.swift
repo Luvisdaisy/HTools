@@ -25,15 +25,15 @@ final class KeyboardWorker {
     private var started = false
 
     static func run(arguments: [String]) -> Never {
-        guard arguments.count == 5, geteuid() == 0,
+        guard arguments.count == 4, geteuid() == 0,
               let parent = Int32(arguments[1]), parent > 1,
               let uid = UInt32(arguments[2]), uid != 0,
-              let target = UInt64(arguments[3]), let external = UInt64(arguments[4]), target != external else { exit(2) }
+              let target = UInt64(arguments[3]), target != 0 else { exit(2) }
         let worker = KeyboardWorker()
-        worker.run(path: arguments[0], parent: parent, uid: uid, target: target, external: external)
+        worker.run(path: arguments[0], parent: parent, uid: uid, target: target)
     }
 
-    private func run(path: String, parent: pid_t, uid: uid_t, target: UInt64, external: UInt64) -> Never {
+    private func run(path: String, parent: pid_t, uid: uid_t, target: UInt64) -> Never {
         let fd = socket(AF_UNIX, SOCK_STREAM, 0)
         guard fd >= 0 else { exit(2) }
         let connected = (try? KeyboardChannel.address(path) { Darwin.connect(fd, $0, $1) }) == 0
@@ -47,7 +47,7 @@ final class KeyboardWorker {
                 self.lease.renew()
                 if !self.started {
                     self.started = true
-                    self.begin(target: target, external: external)
+                    self.begin(target: target)
                 }
                 _ = self.channel?.send("PONG")
             case "STOP": self.finish()
@@ -84,7 +84,7 @@ final class KeyboardWorker {
         finish()
     }
 
-    private func begin(target: UInt64, external: UInt64) {
+    private func begin(target: UInt64) {
         let access = IOHIDCheckAccess(kIOHIDRequestTypeListenEvent)
         log.notice("Input access=\(access.rawValue), euid=\(geteuid())")
         guard access == kIOHIDAccessTypeGranted else {
@@ -92,7 +92,7 @@ final class KeyboardWorker {
         }
         manager.changed = { [weak self] kind, device in
             guard let self else { return }
-            if kind == "removed", device.registryID == target || device.registryID == external { self.finish() }
+            if kind == "removed", device.registryID == target { self.finish() }
         }
         manager.failed = { [weak self] _ in self?.finish(error: "无法检测键盘，请关闭后重新开启。") }
         guard manager.start() == 0 else { finish(error: "无法访问键盘。请在系统设置中允许 HTools 监控输入。") }
@@ -102,7 +102,7 @@ final class KeyboardWorker {
                 self?.finish(error: String(format: "无法禁用内置键盘（0x%08x）。请检查输入监控权限或其他键盘工具。", UInt32(bitPattern: code)))
             }
         }
-        guard session.start(devices: Array(manager.devices.values), target: target, external: external) else {
+        guard session.start(devices: Array(manager.devices.values), target: target) else {
             finish(error: "键盘连接已变化或无法安全识别内置键盘，请检查连接后重试。")
         }
         _ = channel?.send("BLOCKED")

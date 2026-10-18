@@ -4,7 +4,7 @@ import SystemConfiguration
 
 @objc protocol KeyboardServiceProtocol {
     func status(reply: @escaping (String, Bool) -> Void)
-    func startSession(path: String, internalID: UInt64, externalID: UInt64, reply: @escaping (String?) -> Void)
+    func startSession(path: String, internalID: UInt64, reply: @escaping (String?) -> Void)
     func stopSession(reply: @escaping () -> Void)
 }
 
@@ -15,7 +15,7 @@ enum KeyboardServiceIdentity {
     static let bundlePath = "/Library/PrivilegedHelperTools/HToolsKeyboard.app"
     static let executable = bundlePath + "/Contents/MacOS/HTools"
     static let plist = "/Library/LaunchDaemons/" + name + ".plist"
-    static let version = "2"
+    static let version = "3"
 
     static func requirement() throws -> String {
         var code: SecCode?
@@ -110,15 +110,15 @@ final class KeyboardService: NSObject, NSXPCListenerDelegate {
     }
 
     fileprivate func start(owner: UUID, pid: pid_t, uid: uid_t, path: String,
-                           internalID: UInt64, externalID: UInt64) -> String? {
+                           internalID: UInt64) -> String? {
         var consoleUID: uid_t = 0
         _ = SCDynamicStoreCopyConsoleUser(nil, &consoleUID, nil)
-        guard consoleUID == uid, pid > 1, internalID != externalID,
+        guard consoleUID == uid, pid > 1, internalID != 0,
               KeyboardServiceIdentity.validSocketPath(path, uid: uid) else { return "请求无效或当前用户会话已失活。" }
         guard worker == nil else { return "已有键盘会话正在运行或恢复，请稍后重试。" }
         // Never execute a path or command supplied by a client.
         let process = Self.sessionProcess(uid: uid, arguments: [
-            "--keyboard-worker", path, String(pid), String(uid), String(internalID), String(externalID)
+            "--keyboard-worker", path, String(pid), String(uid), String(internalID)
         ])
         process.terminationHandler = { [weak self] ended in
             DispatchQueue.main.async {
@@ -151,10 +151,10 @@ private final class KeyboardServiceClient: NSObject, KeyboardServiceProtocol {
             service.checkAccess(uid: uid, reply: reply)
         }
     }
-    func startSession(path: String, internalID: UInt64, externalID: UInt64, reply: @escaping (String?) -> Void) {
+    func startSession(path: String, internalID: UInt64, reply: @escaping (String?) -> Void) {
         DispatchQueue.main.async { [self] in
             guard let service else { reply("键盘服务不可用。"); return }
-            reply(service.start(owner: id, pid: pid, uid: uid, path: path, internalID: internalID, externalID: externalID))
+            reply(service.start(owner: id, pid: pid, uid: uid, path: path, internalID: internalID))
         }
     }
     func stopSession(reply: @escaping () -> Void) {

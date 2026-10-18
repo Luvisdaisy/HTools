@@ -6,6 +6,10 @@
 
 `MenuBarController` 区分左右键：左键切换设置面板，右键提供无图标、无快捷键的两项菜单。`AppDelegate` 使用不可分离的瞬时 `NSPopover`，锚定菜单栏按钮；`SettingsView` 以顶部标签导航，根据页面与设备数更新 400 pt 宽的内容尺寸。关闭前校验草稿，授权中阻止关闭；隐藏面板不改变后台服务状态。
 
+## 登录自启
+
+`LoginItemModel` 通过可注入的 `LoginItemServicing` 调用 `SMAppService.mainApp`；状态直接读取系统，不另存布尔偏好，也不在启动时自动注册。通用设置无需功能权限，待审批时提供系统登录项入口；打开面板和应用激活后刷新。登录启动不恢复键盘禁用。
+
 ## 访达
 
 `SettingsModel` 管理草稿及偏好，`PreferencesStore` 迁移原应用的有效尺寸设置。`FinderWindowService` 在串行队列中维护 AX 观察器与窗口基线，只处理新标准窗口；策略层负责尺寸夹限和屏幕坐标换算。启动、保存、重新聚焦、标签和最小化恢复不会批量调整已有窗口。
@@ -14,12 +18,12 @@
 
 GUI 普通用户进程 → 精确签名校验的特权 XPC 服务 → `launchctl asuser` 用户审计会话中的 root worker → IOHIDDeviceOpen(SeizeDevice)。共享核心位于 `KeyboardGuardPOC/Sources/KeyboardCore`，独立 POC 与应用使用同一分类逻辑。
 
-- 仅独占唯一可信内置键盘，要求可信外接设备在场；拒绝虚拟、歧义、多内置与危险复合接口。
+- 仅独占唯一可信内置键盘；集成版不依赖外接设备，拒绝虚拟、歧义、多内置与危险复合接口。共享 SeizeSession 的可选外接条件供独立 POC 保留原保护合同。
 - 服务使用内核提供的连接 UID/PID，并检查控制台用户与私有 socket 元数据。仅执行固定 worker，不接受可执行路径或 shell 命令。
 - GUI 与服务双向校验当前 executable 的 cdhash。新构建需要更新服务，不仅靠 Bundle ID 判断身份。
 - root worker 保留管理员级 IOKit 身份，并进入用户的 bootstrap/审计会话。准备检查与实际操作使用相同启动路径，避免前台权限通过但后台被 TCC 拒绝。
 - GUI 创建 0700 临时目录、0600 Unix socket；双方校验 peer 身份。协议仅含心跳、停止和状态，不传输输入内容。
-- 0.5 秒续约，失联 3 秒尝试释放，5 秒独立 watchdog 退出；release 自身另有 2 秒保护。设备移除、退出、睡眠、会话失活均结束会话，重连不重启禁用。
+- 0.5 秒续约，失联 3 秒尝试释放，5 秒独立 watchdog 退出；release 自身另有 2 秒保护。内置目标移除、退出、睡眠、会话失活均结束会话，重连不重启禁用。外接设备移除仅更新列表，不结束集成版会话；XPC/worker 参数不再含外接 ID，服务协议版本为 3。
 
 ## 权限与服务生命周期
 

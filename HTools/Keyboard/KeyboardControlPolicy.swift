@@ -2,16 +2,13 @@ import Foundation
 
 struct KeyboardSelection: Equatable {
     let internalID: UInt64
-    let externalID: UInt64
 
     static func resolve(_ devices: [KeyboardDevice]) -> KeyboardSelection? {
         let internalDevices = devices.filter { $0.classification.role == .builtIn }
-        let externals = devices.filter { $0.classification.role == .external }.sorted { $0.registryID < $1.registryID }
         guard Set(devices.map(\.registryID)).count == devices.count,
               internalDevices.count == 1,
-              devices.filter({ $0.builtIn == true && $0.classification.role != .virtual }).count == 1,
-              let external = externals.first else { return nil }
-        return KeyboardSelection(internalID: internalDevices[0].registryID, externalID: external.registryID)
+              devices.filter({ $0.builtIn == true && $0.classification.role != .virtual }).count == 1 else { return nil }
+        return KeyboardSelection(internalID: internalDevices[0].registryID)
     }
 }
 

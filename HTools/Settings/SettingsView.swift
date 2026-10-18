@@ -87,12 +87,14 @@ struct SettingsView: View {
     @ObservedObject var model: SettingsModel
     @ObservedObject var keyboard: KeyboardControlModel
     @ObservedObject var permissions: PermissionsModel
+    @ObservedObject var loginItem: LoginItemModel
     @State private var page: SettingsPage
     var onSizeChange: (NSSize) -> Void
 
-    init(model: SettingsModel, keyboard: KeyboardControlModel, permissions: PermissionsModel,
+    init(model: SettingsModel, keyboard: KeyboardControlModel, permissions: PermissionsModel, loginItem: LoginItemModel,
          initialPage: SettingsPage? = nil, onSizeChange: @escaping (NSSize) -> Void = { _ in }) {
         self.model = model; self.keyboard = keyboard; self.permissions = permissions
+        self.loginItem = loginItem
         self.onSizeChange = onSizeChange
         _page = State(initialValue: initialPage ?? ((!permissions.setupCompleted || !permissions.status.complete) ? .permissions : .finder))
     }
@@ -104,6 +106,7 @@ struct SettingsView: View {
 
     private var panelHeight: CGFloat {
         switch page {
+        case .general: return loginItem.error != nil ? 280 : (loginItem.needsApproval ? 194 : 156)
         case .finder: return model.status.trusted ? (model.dirty && !model.validDraft ? 218 : 196) : 156
         case .keyboard:
             return permissions.status.keyboardReady ? 176 + min(CGFloat(max(1, keyboard.devices.count)) * 64, 192) : 156
@@ -139,6 +142,7 @@ struct SettingsView: View {
             .padding(.horizontal, 12).padding(.top, 12)
             Group {
                 switch page {
+                case .general: GeneralSettingsPage(loginItem: loginItem)
                 case .finder: FinderSettingsPage(model: model) { navigate(to: .permissions) }
                 case .keyboard:
                     KeyboardControlView(model: keyboard, authorized: permissions.status.keyboardReady) {

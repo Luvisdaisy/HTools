@@ -9,6 +9,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate {
     private var model: SettingsModel!
     private var permissions: PermissionsModel!
     private var keyboard: KeyboardControlModel!
+    private var loginItem: LoginItemModel!
     private var menuBar: MenuBarController?
     private var settingsPopover: NSPopover?
     private var notifications: [NSObjectProtocol] = []
@@ -22,6 +23,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate {
         permissions = PermissionsModel()
         model = SettingsModel()
         keyboard = KeyboardControlModel()
+        loginItem = LoginItemModel()
         permissions.beforeServiceChange = { [weak self] in self?.keyboard.disable() }
         permissions.start()
         keyboard.start()
@@ -30,7 +32,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate {
         installApplicationMenu()
         model.start()
         notifications.append(NotificationCenter.default.addObserver(forName: NSApplication.didChangeScreenParametersNotification, object: nil, queue: .main) { [weak self] _ in self?.model.updateDisplays() })
-        notifications.append(NotificationCenter.default.addObserver(forName: NSApplication.didBecomeActiveNotification, object: nil, queue: .main) { [weak self] _ in self?.model.service.refresh(); self?.permissions.refresh() })
+        notifications.append(NotificationCenter.default.addObserver(forName: NSApplication.didBecomeActiveNotification, object: nil, queue: .main) { [weak self] _ in self?.model.service.refresh(); self?.permissions.refresh(); self?.loginItem.refresh() })
         for name in [NSWorkspace.didLaunchApplicationNotification, NSWorkspace.didTerminateApplicationNotification, NSWorkspace.didWakeNotification] {
             workspaceNotifications.append(NSWorkspace.shared.notificationCenter.addObserver(forName: name, object: nil, queue: .main) { [weak self] _ in self?.model.service.refresh(); self?.permissions.refresh() })
         }
@@ -47,7 +49,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate {
             popover.animates = false
             popover.delegate = self
             popover.contentViewController = NSHostingController(rootView:
-                SettingsView(model: model, keyboard: keyboard, permissions: permissions,
+                SettingsView(model: model, keyboard: keyboard, permissions: permissions, loginItem: loginItem,
                              onSizeChange: { [weak popover] size in popover?.contentSize = size }))
             popover.contentSize = NSSize(width: 400, height: 348)
             settingsPopover = popover
@@ -63,6 +65,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate {
         }
         model.service.refresh()
         permissions.refresh()
+        loginItem.refresh()
     }
 
     private func toggleSettings() {

@@ -14,7 +14,8 @@
 
 - 更新前从菜单栏退出旧版，用新 App 替换“应用程序”里的旧 App；本机设置保留。不要同时运行多个副本。
 - 更新临时签名应用后可能需要重新添加辅助功能、输入监控权限，并在权限页安装或更新服务以匹配新签名。
-- 没有自动更新或 GUI 登录启动。卸载前先在权限页从“管理服务”点击“移除服务”并完成系统授权，再退出、删除 App 和系统隐私权限条目。直接删除 App 不会清理服务。
+- 在“通用设置”可开启开机自启；如需系统批准，按页面入口前往登录项设置。自启不会恢复键盘禁用。当前不提供自动更新。
+- 卸载前关闭开机自启，再在权限页从“管理服务”点击“移除服务”并完成系统授权，然后退出、删除 App 和系统隐私权限条目。直接删除 App 不会清理服务。
 - 服务文件为 `/Library/PrivilegedHelperTools/HToolsKeyboard.app` 和 `/Library/LaunchDaemons/local.HTools.keyboard.plist`。服务按需运行，开机不会自动禁用键盘。
 
 ## 可选：验证下载完整性
@@ -22,7 +23,7 @@
 将 DMG 和同名 `.dmg.sha256` 放在同一个目录，在该目录运行（替换成实际版本）：
 
 ```sh
-shasum -a 256 -c HTools-0.2.1-universal.dmg.sha256
+shasum -a 256 -c HTools-0.3.0-universal.dmg.sha256
 ```
 
 结果应为 `OK`。校验和用于检查文件完整性，不等于 Apple 公证或开发者身份认证。
@@ -33,4 +34,4 @@ Download the universal DMG from GitHub Releases, drag the app to Applications, e
 
 This preview uses ad-hoc signing, with **no Developer ID signature or Apple notarization**. If macOS blocks opening it, only after trusting the download source, use System Settings → Privacy & Security → Open Anyway and follow the system prompts. Availability depends on macOS and device policy. Keep system security protections enabled; stop if macOS reports malware or another unexpected warning.
 
-Complete Accessibility, Input Monitoring and keyboard service installation in the first-launch Permissions page. Reinstall the service after updating the app to match its signature; remove it in Permissions before deleting the app. Quit the old version before replacing it; updates may require removing and re-adding its Accessibility entry. Settings are preserved. Automatic updates and launch at login are not included. The UI is in Simplified Chinese.
+Complete Accessibility, Input Monitoring and keyboard service installation in the first-launch Permissions page. Reinstall the service after updating the app to match its signature; remove it in Permissions before deleting the app. Quit the old version before replacing it; updates may require removing and re-adding its Accessibility entry. Settings are preserved. Launch at login is optional in General settings; disable it before uninstalling. Automatic updates are not included. The UI is in Simplified Chinese.
